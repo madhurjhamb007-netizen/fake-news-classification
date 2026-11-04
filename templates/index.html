@@ -1,1 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TruthLens | News Classifier</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <main class="page">
+    <nav class="nav">
+      <a class="brand" href="/"><span class="brand-icon">✦</span> TruthLens</a>
+      <span class="nav-tag">MACHINE LEARNING DEMO</span>
+    </nav>
 
+    <section class="hero">
+      <div class="eyebrow"><span class="dot"></span> AI-POWERED TEXT ANALYSIS</div>
+      <h1>Look beyond the<br><span>headline.</span></h1>
+      <p class="intro">Paste a news article and let our machine learning model analyze its writing patterns.</p>
+
+      <form method="POST" class="analyzer">
+        <div class="field-top">
+          <label for="article">NEWS ARTICLE</label>
+          <span>Paste the article text below</span>
+        </div>
+        <textarea id="article" name="article" placeholder="Paste the full news article here..." required>{{ article }}</textarea>
+        <div class="form-bottom">
+          <span class="hint">For best results, provide the article body.</span>
+          <button type="submit">Analyze article <span>→</span></button>
+        </div>
+      </form>
+
+      {% if result %}
+      <section class="result-card" aria-live="polite">
+        {% if result.error %}
+          <div class="result-label">INPUT ERROR</div>
+          <h2>{{ result.error }}</h2>
+        {% else %}
+          <div class="result-label">MODEL ANALYSIS</div>
+          {% if result.prediction == "Fake" %}
+            <h2 class="fake">Potentially Fake</h2>
+          {% else %}
+            <h2 class="real">Potentially Real</h2>
+          {% endif %}
+          <p class="result-note">The model's predicted class is <strong>{{ result.prediction }}</strong>.</p>
+          <div class="metric">
+            <div><span>Real score</span><strong>{{ "%.2f"|format(result.confidence_real * 100) }}%</strong></div>
+            <div class="track"><span class="real-bar" style="width: {{ result.confidence_real * 100 }}%"></span></div>
+          </div>
+          <div class="metric">
+            <div><span>Fake score</span><strong>{{ "%.2f"|format(result.confidence_fake * 100) }}%</strong></div>
+            <div class="track"><span class="fake-bar" style="width: {{ result.confidence_fake * 100 }}%"></span></div>
+          </div>
+        {% endif %}
+      </section>
+      {% endif %}
+    </section>
+
+    <footer>
+      <p><strong>Important:</strong> This tool classifies patterns learned from the WELFake dataset. It does not independently verify facts or determine whether a news story is true.</p>
+      <span>Built with Python · Flask · XGBoost</span>
+    </footer>
+  </main>
+</body>
+</html>
