@@ -1,6 +1,6 @@
 import re
 import string
-import joblib
+import xgboost as xgb
 import numpy as np
 import nltk
 from nltk.corpus import stopwords
@@ -48,10 +48,12 @@ def clean_text(text):
 
 
 # Load trained model and vectorizer
-MODEL_PATH = "xgb_unbiased_model.pkl"
+MODEL_PATH = "xgb_unbiased_model.json"
 VECTORIZER_PATH = "cv_unbiased_vectorizer.pkl"
 
-model = joblib.load(MODEL_PATH)
+model = xgb.XGBClassifier()
+model.load_model(MODEL_PATH)
+
 vectorizer = joblib.load(VECTORIZER_PATH)
 
 
